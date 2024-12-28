@@ -1,0 +1,19 @@
+[project]
+name = "mutagenex"
+version = "0.1.0"
+description = "Residue mutations of a protein using PyMOL"
+authors = [
+    {name = "Leonardo Bò", email = "boleo88@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "GPL3"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
