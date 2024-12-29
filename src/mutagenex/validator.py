@@ -14,12 +14,13 @@ class MutagenesisValidator:
         self.console = Console()
 
         # Pattern for valid mutations: 'chain_new_residue'
-        self.mutation_pattern = re.compile(r'^[A-Z]_[A-Za-z]+$')  # Chain + new amino acid (3-letter code)
+        # self.mutation_pattern = re.compile(r'^[A-Z]_[A-Za-z]+$')
+        self.mutation_pattern = re.compile(r'^\d+[A-Z]?_[A-Z]_[A-Z]{3}$')  # Chain + new amino acid (3-letter code)
         
         # List of valid amino acids (3-letter code)
         self.valid_amino_acids = [
-            'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS', 'MET',
-            'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR', 'VAL'
+            'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 
+            'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR', 'TRP', 'TYR', 'VAL'
         ]
 
     def validate_mutation_format(self, mutations: List[str]) -> bool:
@@ -31,11 +32,11 @@ class MutagenesisValidator:
         for mutation in mutations:
             # Split the mutation into chain and new residue
             parts = mutation.split('_')
-            if len(parts) != 2:
-                self.console.print(f"Error: Invalid mutation format '{mutation}', expected 'chain_new_residue'.", style="bold red")
+            if len(parts) != 3:
+                self.console.print(f"Error: Invalid mutation format '{mutation}', expected 'resno_chain_newresidue'.", style="bold red")
                 return False
             
-            chain, new_residue = parts
+            resno, chain, new_residue = parts
             
             # Check if the chain is a single uppercase letter and the new residue is a 3-letter amino acid code
             if not (len(chain) == 1 and chain.isupper()):
@@ -57,13 +58,12 @@ class MutagenesisValidator:
         :return: A list of mutations.
         """
         mutations = []
-
-        # If the input is a file, read mutations from the file
         mutations_path = Path(mutations_input)
         if mutations_path.is_file():
             mutations = self._load_mutations_from_file(mutations_path)
+        elif mutations_path.suffix:
+            self.console.print(f"Error: The path '{mutations_input}' is not a valid file.", style="bold red")
         else:
-            # If the input is a string, split it by commas
             mutations = self._load_mutations_from_string(mutations_input)
         
         return mutations
