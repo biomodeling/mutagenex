@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 from mutagenex.validator import MutagenesisValidator
 
 
@@ -44,11 +45,13 @@ class TestMutagenesisValidator(unittest.TestCase):
 
     def test_load_mutations_from_file(self):
         # Creazione di un file temporaneo di test
-        file_path = "tests/data/mutations.txt"
+        file_path = Path("tests/data/mutations.txt")
         with open(file_path, "w") as file:
             file.write("112A_A_PRO\n65A_A_ALA\n110B_B_LYS\n")
         
         mutations = self.validator.load_mutations(file_path)
+        if file_path.exists():
+            file_path.unlink()
         self.assertEqual(mutations, ["112A_A_PRO", "65A_A_ALA", "110B_B_LYS"])
 
     def test_load_mutations_file_not_found(self):
@@ -57,12 +60,14 @@ class TestMutagenesisValidator(unittest.TestCase):
         self.assertEqual(mutations, [])
 
     def test_invalid_file_format(self):
-        file_path = "tests/data/invalid_mutations.txt"
+        file_path = Path("tests/data/invalid_mutations.txt")
         
         with open(file_path, "w") as file:
             file.write("112A_A_PRO\ninvalid_line\n65A_A_ALA\n110B_B_LYS\n")
         
         mutations = self.validator.load_mutations(file_path)
+        if file_path.exists():
+            file_path.unlink()
         result = self.validator.validate_mutation_format(mutations)        
         self.assertFalse(result)
 
