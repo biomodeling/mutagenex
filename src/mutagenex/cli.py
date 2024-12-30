@@ -2,17 +2,14 @@ import typer
 import logging
 from datetime import datetime
 from pathlib import Path
-from rich.progress import Progress
 from rich.console import Console
 from .validator import MutagenesisValidator
-from .progress import progress_bar
+from .utils import progress_bar
 from .mutagenex import mutate_multiple_residues
 
-# Set up the progress bar and console
-progress = progress_bar
-console = Console()
 
-app = typer.Typer()
+console = Console()
+app = typer.Typer(rich_markup_mode="markdown")
 
 @app.command()
 def main(
@@ -22,9 +19,43 @@ def main(
     log: bool = typer.Option(False, help="Enable logging to a file in the output directory.")
 ):
     """
-    This command applies multiple mutations to all PDB files in the specified directory.
-    """
+    Make single or multiple mutations from command line with pymol.
 
+    Each mutation must be represented by a string consisting of three elements,
+    separated by an underscore (_):
+    
+    - Residue number to be mutated
+    
+    - Chain of the residue to be mutated (single uppercase letter)
+    
+    - New residue (three-letter code)
+    
+    
+    Example: '58_A_PRO' means to mutate residue 58 of chain A to proline.
+    
+    The residue number can include letters (e.g. 110A) and any valid selection that PyMOL can identify.
+    The chain identifier must be a single uppercase letter (e.g., 'A', 'B', 'C').
+
+    Mutations can be provided in two formats:
+    
+    1. As a comma-separated list of mutations (a single string), e.g.: ```58_A_PRO,110A_H_ALA,2_B_LYS```
+    
+    2. As a `.txt` file where each line represents a mutation, e.g.:
+
+    ```
+    
+    58_A_PRO
+    
+    110A_H_ALA
+    
+    2_B_LYS
+    
+    ```
+    
+
+    The program will apply these mutations to all PDB files found in the input directory and save the 
+    mutated files to the output directory.
+    """
     # Step 1: Initialize the mutation validator
     validator = MutagenesisValidator()
 
@@ -76,29 +107,35 @@ def main(
         console.print("WARNING: No PDB files found in the specified directory.", style="bold yellow")
         return  # Exit without raising an exception
 
-    # Always show the progress bar, even for a single file
-    task = progress.add_task("[cyan]Mutating PDB files...", total=len(pdb_files))
+    warning_list = []
 
-    for pdb_file in pdb_files:
-        # Apply mutations to the PDB file
-        mutate_multiple_residues(pdb_file, mutations_list, output_path)
+    with progress_bar as progress:
+        task = progress.add_task("[cyan]Processing...", total=len(pdb_files))
 
-        # Log the mutation action
+        for pdb_file in pdb_files:
+            # Apply mutations to the PDB file
+            mutate_multiple_residues(pdb_file, mutations_list, output_path, log, warning_list)
+
+            # Log the mutation action
+            if log:
+                logging.info(f"Processed file: {pdb_file.name} with mutations: {mutations_list}")
+
+            # Update progress bar for each file
+            progress.update(task, advance=1)
+
+    if warning_list:
+        for warning in warning_list:
+            if log:
+                logging.warning(warning)
         if log:
-            logging.info(f"Processed file: {pdb_file.name} with mutations: {mutations_list}")
-
-        # Update progress bar for each file
-        progress.update(task, advance=1)
-
-    # Stop the progress bar
-    progress.stop()
+            console.print("WARNING: Some mutations could not be applied. Check the log for details.", style="bold yellow")
+        else:
+            console.print("WARNING: Some mutations could not be applied. Run again with --log for more details.", style="bold yellow")
 
     # Success message
     console.print("Mutagenesis completed successfully!", style="bold green")
     if log:
         logging.info("Mutagenesis completed successfully.")
-    # Final log message if needed
-    if log:
         logging.info("Log file has been saved to: %s", log_file)
 
 
