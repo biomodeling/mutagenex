@@ -45,7 +45,7 @@ class TestMutagenesisValidator(unittest.TestCase):
 
     def test_load_mutations_from_file(self):
         # Creazione di un file temporaneo di test
-        file_path = Path("tests/data/mutations.txt")
+        file_path = Path("tests/data/test_mutations.txt")
         with open(file_path, "w") as file:
             file.write("112A_A_PRO\n65A_A_ALA\n110B_B_LYS\n")
         
@@ -60,7 +60,7 @@ class TestMutagenesisValidator(unittest.TestCase):
         self.assertEqual(mutations, [])
 
     def test_invalid_file_format(self):
-        file_path = Path("tests/data/invalid_mutations.txt")
+        file_path = Path("tests/data/test_invalid_mutations.txt")
         
         with open(file_path, "w") as file:
             file.write("112A_A_PRO\ninvalid_line\n65A_A_ALA\n110B_B_LYS\n")
