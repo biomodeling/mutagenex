@@ -22,8 +22,15 @@ Mutations can be provided in two formats:
     2_B_LYS
     ```
 
-The program will apply these mutations to all PDB files found in the input directory and save the 
-mutated files to the output directory.
+The program will apply these mutations to all PDB files found in the input directory and save the mutated files to the output directory.
+
+**Arguments**
+* input_path: Directory containing the original PDB files.
+* output_path: Directory to save the mutated PDB files.
+* --mutations: Comma-separated list of mutations or path to a mutation file.
+* --log: Enable logging to a file in the output directory.
+* --help
+
 
 ## Run script
 
@@ -39,7 +46,63 @@ mutated files to the output directory.
     python -m mutagenex.cli ./tests/data/input/ ./tests/data/output/ --mutations=./tests/data/mutations.txt --log
     ```
 
-### wrap
+### As CLI
+
+#### 1. Build the Package
+
+Use the following command to create the distribution files:
+
+```bash
+python -m build
+```
+
+This will create the distribution files in the `dist/` directory, such as `.tar.gz` or `.whl` files.
+
+#### 2. Install the Package
+
+Once the build is successful, install the package in the same pymol enviroment using `pip`:
+
+```bash
+pip install dist/mutagenex-0.1.0.tar.gz
+```
+
+#### 3. Create a Wrap Script (optional)
+
+If you installed pymol and mutagenex in a virtual environment, a wrap script allows you to execute the package from anywhere without needing to manually activate the virtual environment each time.
+
+Create a script called `mutagenex` (or any name you prefer) in the `~/.local/bin/` directory (or another directory included in your `PATH`).
+
+Here’s a simple wrap script:
+
+```bash
+#!/bin/bash
+# This is the wrap for your Python script
+
+# Activate the virtual environment if necessary
+source /path/to/your/venv/bin/activate
+
+# Run the Python module
+mutagenex "$@"
+```
+
+Ensure the wrap script is executable:
+
+```bash
+chmod +x ~/.local/bin/mutagenex
+```
+
+Now you can call `mutagenex` from anywhere, and it will run the package as expected.
+
+
+#### Verifying the Setup  
+Once the wrap is set up, you can verify it by running:
+
+```bash
+mutagenex --help
+```
+
+If everything is set up correctly, this will display the help message from your `mutagenex.cli` module.
+
 
 
 ## Run test
