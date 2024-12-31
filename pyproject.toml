@@ -14,6 +14,9 @@ license = {text = "GPLv3"}
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
+[project.scripts]
+mutagenex = "mutagenex.cli:app"
+
 
 [tool.pdm]
 distribution = true
