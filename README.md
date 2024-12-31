@@ -1,4 +1,7 @@
 # mutagenex
+[![Version](figures/version.svg)](https://github.com/biomodeling/mutagenex)
+![Python Version](figures/python.svg)
+[![License: GPL v3](figures/license.svg)](https://github.com/biomodeling/mutagenex/blob/master/LICENSE.md)
 
 Make single or multiple mutations from command line with pymol.
 
