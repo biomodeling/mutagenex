@@ -91,12 +91,13 @@ class MutagenesisValidator:
 
     def check_pymol_installed(self) -> bool:
         """
-        Checks if PyMOL is installed and accessible on the system.
-        :return: True if PyMOL is installed and accessible, False otherwise.
+        Checks if PyMOL is installed as a Python package via pip, 
+        and is accessible in the current environment.
+        :return: True if PyMOL is installed as a Python module, False otherwise.
         """
         try:
-            subprocess.run(['pymol', '--version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            import pymol
             return True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            self.console.print("Error: PyMOL is not installed or not accessible.", style="bold red")
+        except ImportError:
+            self.console.print("Error: PyMOL is not installed as a Python package or not accessible in the environment.", style="bold red")
             return False
