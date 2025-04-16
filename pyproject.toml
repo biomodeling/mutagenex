@@ -1,6 +1,6 @@
 [project]
 name = "mutagenex"
-version = "0.2.1"
+version = "0.2.2"
 description = "Residue mutations of a protein using PyMOL"
 authors = [
     {name = "Leonardo Bò", email = "boleo88@gmail.com"},
