@@ -13,7 +13,7 @@ app = typer.Typer(rich_markup_mode="markdown")
 
 @app.command()
 def main(
-    input_path: Path = typer.Argument(..., help="Directory containing the original PDB files."),
+    input_path: Path = typer.Argument(..., help="Directory containing the original PDB files or a single PDB file."),
     output_path: Path = typer.Argument(..., help="Directory to save the mutated PDB files."),
     mutations: str = typer.Option(..., help="Comma-separated list of mutations or path to a mutation file."),
     log: bool = typer.Option(False, help="Enable logging to a file in the output directory.")
@@ -96,8 +96,17 @@ def main(
         console.print("ERROR: Invalid mutation format detected. Please correct the mutations.", style="bold red")
         return  # Exit without raising an exception
 
-    # Step 5: Process the PDB files
-    pdb_files = list(input_path.glob("*.pdb"))
+    # Step 5: Handle input path (single file or directory)
+    if input_path.is_dir():
+        # If it's a directory, find all PDB files
+        pdb_files = list(input_path.glob("*.pdb"))
+    elif input_path.is_file() and input_path.suffix == ".pdb":
+        # If it's a single PDB file
+        pdb_files = [input_path]
+    else:
+        # If neither a valid directory nor a valid file
+        console.print("ERROR: Invalid input path. Please provide a valid directory or a single PDB file.", style="bold red")
+        return
 
     if not pdb_files:
         # Log the warning
@@ -141,3 +150,4 @@ def main(
 
 if __name__ == "__main__":
     app()
+

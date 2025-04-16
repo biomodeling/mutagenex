@@ -1,5 +1,4 @@
 import re
-import subprocess
 from pathlib import Path
 from typing import List
 from rich.console import Console
@@ -13,9 +12,8 @@ class MutagenesisValidator:
         # Create a console instance for printing colored messages
         self.console = Console()
 
-        # Pattern for valid mutations: 'chain_new_residue'
-        # self.mutation_pattern = re.compile(r'^[A-Z]_[A-Za-z]+$')
-        self.mutation_pattern = re.compile(r'^\d+[A-Z]?_[A-Z]_[A-Z]{3}$')  # Chain + new amino acid (3-letter code)
+        # Pattern for valid mutations: 'resno_chain_newresidue'
+        self.mutation_pattern = re.compile(r'^\d+[A-Z]?_[A-Z]_[A-Z]{3}$') 
         
         # List of valid amino acids (3-letter code)
         self.valid_amino_acids = [

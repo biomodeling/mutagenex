@@ -17,8 +17,11 @@ The residue number can include letters (e.g. 110A) and any valid selection that 
 The chain identifier must be a single uppercase letter (e.g., 'A', 'B', 'C').
 
 Mutations can be provided in two formats:
+
 1. As a comma-separated list of mutations (a single string), e.g.: `58_A_PRO,110A_H_ALA,2_B_LYS`
+
 2. As a `.txt` file where each line represents a mutation, e.g.:
+
     ```
     58_A_PRO
     110A_H_ALA
@@ -28,11 +31,12 @@ Mutations can be provided in two formats:
 The program will apply these mutations to all PDB files found in the input directory and save the mutated files to the output directory.
 
 **Arguments**
-* input_path: Directory containing the original PDB files.
-* output_path: Directory to save the mutated PDB files.
-* --mutations: Comma-separated list of mutations or path to a mutation file.
-* --log: Enable logging to a file in the output directory.
-* --help
+
+* `input_path`: Directory containing the original PDB files or a single PDB file.
+* `output_path`: Directory to save the mutated PDB files.
+* `--mutations`: Comma-separated list of mutations or path to a mutation file.
+* `--log`: Enable logging to a file in the output directory.
+* `--help`
 
 
 ## Run script
