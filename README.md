@@ -70,7 +70,13 @@ This will create the distribution files in the `dist/` directory, such as `.tar.
 Once the build is successful, install the package in the same pymol enviroment using `pip`:
 
 ```bash
-pip install dist/mutagenex-0.1.0.tar.gz
+pip install dist/mutagenex-latest.tar.gz
+```
+
+Alternatively, you can install the package directly from GitHub, which might be the recommended option to ensure you have the latest version:
+
+```bash
+pip install git+https://github.com/biomodeling/mutagenex.git
 ```
 
 #### 3. Create a Wrap Script (optional)
